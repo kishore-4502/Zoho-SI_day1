@@ -1,0 +1,27 @@
+Day 1:
+
+Topic:
+OOPS
+Class
+Objects
+Encapsulation  
+        What is Encapsulation
+        Getters
+        Setters
+Abstraction
+        What is Abstraction
+        Abstract classes
+Polymorphism
+
+Inheritance 
+
+Assignment:
+
+    Create a class for vehicle which contains vehicleType (petrol, diesel ,ev ,…), brand , model, color, mileage, price.
+    Derive car and bike from vehicle
+    Car should have attributes no of persons, carType (suv, sedan, etc) ,
+    Bike should have attributes weight, bikeType(scooter, motorbikes ,etc)
+    Create a abstract method getNoOfWheels in vehicles which has to be overridden in derive class
+    Using operator overloading (<<) to display, brand, model, type, color, price.
+    Using operator overloading (< (less than) or > (greater than) ) two vehicles can be compared, return true or false based on price of the vehicle. 
+    In main function , create some objects for car and bike , print the noofWheels , compare two vehicles.
