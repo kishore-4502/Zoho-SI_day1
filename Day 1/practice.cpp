@@ -4,18 +4,18 @@ using namespace std;
 // TODO 1.Create a class for vehicle which contains vehicleType (petrol, diesel ,ev ,…), brand , model, color, mileage, price.
 enum VehicleType
 {
-    Diesel,
+    Diesel = 0,
     Petrol,
     Ev
 };
 enum CarType
 {
-    Suv,
+    Suv = 3,
     Sedan
 };
 enum BikeType
 {
-    Scooter,
+    Scooter = 5,
     MotorBike
 };
 class Vehicle
