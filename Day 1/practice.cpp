@@ -163,9 +163,13 @@ int main()
     {
         cout << "Bike1 is cheaper than Car1" << endl;
     }
-    else
+    else if (car1 < bike1)
     {
         cout << "Car1 is cheaper than Bike1" << endl;
+    }
+    else
+    {
+        cout << "Both Prices are equal" << endl;
     }
 
     return 0;
