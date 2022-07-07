@@ -2,10 +2,26 @@
 using namespace std;
 
 // TODO 1.Create a class for vehicle which contains vehicleType (petrol, diesel ,ev ,…), brand , model, color, mileage, price.
+enum VehicleType
+{
+    Diesel,
+    Petrol,
+    Ev
+};
+enum CarType
+{
+    Suv,
+    Sedan
+};
+enum BikeType
+{
+    Scooter,
+    MotorBike
+};
 class Vehicle
 {
 public:
-    string vehicleType;
+    VehicleType vehicleType;
     string brand;
     string model;
     string color;
@@ -13,7 +29,7 @@ public:
     int price;
     // TODO 5.Create a abstract method getNoOfWheels in vehicles which has to be overridden in derive class
     virtual int getNoOfWheels() = 0;
-    Vehicle(string vehicleType, string brand, string model, string color, int mileage, int price)
+    Vehicle(VehicleType vehicleType, string brand, string model, string color, int mileage, int price)
     {
         this->vehicleType = vehicleType;
         this->brand = brand;
@@ -31,8 +47,8 @@ class Car : public Vehicle
 {
 public:
     int noOfPersons;
-    string carType;
-    Car(string vehicleType, string brand, string model, string color, int mileage, int price, int noOfPersons, string carType)
+    CarType carType;
+    Car(VehicleType vehicleType, string brand, string model, string color, int mileage, int price, int noOfPersons, CarType carType)
         : Vehicle(vehicleType, brand, model, color, mileage, price)
     {
         this->noOfPersons = noOfPersons;
@@ -53,8 +69,8 @@ class Bike : public Vehicle
 {
 public:
     int weight;
-    string bikeType;
-    Bike(string vehicleType, string brand, string model, string color, int mileage, int price, int weight, string bikeType)
+    BikeType bikeType;
+    Bike(VehicleType vehicleType, string brand, string model, string color, int mileage, int price, int weight, BikeType bikeType)
         : Vehicle(vehicleType, brand, model, color, mileage, price)
     {
         this->weight = weight;
@@ -73,10 +89,16 @@ public:
 // TODO 6.Using operator overloading (<<) to display, brand, model, type, color, price.
 ostream &operator<<(ostream &COUT, Car c1)
 {
-    COUT << "VehicleType : " << c1.vehicleType << endl;
+    // COUT << "VehicleType : " << c1.vehicleType == Diesel ? "Petrol" : "Diesel" << endl;
+
+    c1.vehicleType == Diesel ? COUT << "VehicleType : Diesel" << endl : c1.vehicleType == Petrol ? COUT << "VehicleType : Petrol" << endl
+                                                                                                 : COUT << "VehicleType : Ev" << endl;
     COUT << "Brand : " << c1.brand << endl;
     COUT << "Model : " << c1.model << endl;
-    COUT << "type : " << c1.carType << endl;
+    c1.carType == Suv ? COUT << "CarType : "
+                             << "Suv" << endl
+                      : COUT << "Car Type : "
+                             << "Sedan" << endl;
     COUT << "Color : " << c1.color << endl;
     COUT << "Price : " << c1.price << endl;
     COUT << "No_Of_Persons : " << c1.noOfPersons << endl;
@@ -86,10 +108,14 @@ ostream &operator<<(ostream &COUT, Car c1)
 
 ostream &operator<<(ostream &COUT, Bike b1)
 {
-    COUT << "VehicleType : " << b1.vehicleType << endl;
+    b1.vehicleType == Diesel ? COUT << "VehicleType : Diesel" << endl : b1.vehicleType == Petrol ? COUT << "VehicleType : Petrol" << endl
+                                                                                                 : COUT << "VehicleType : Ev" << endl;
     COUT << "Brand : " << b1.brand << endl;
     COUT << "Model : " << b1.model << endl;
-    COUT << "type : " << b1.bikeType << endl;
+    b1.bikeType == Scooter ? COUT << "Bike Type : "
+                                  << "Scooter" << endl
+                           : COUT << "Bike Type : "
+                                  << "MotorBike" << endl;
     COUT << "Color : " << b1.color << endl;
     COUT << "Price : " << b1.price << endl;
     COUT << "Weight : " << b1.weight << endl;
@@ -118,9 +144,9 @@ bool operator>(Bike &b1, Car &c1)
 // TODO 8.In main function , create some objects for car and bike , print the noofWheels , compare two vehicles.
 int main()
 {
-    cout.setf(ios::boolalpha);
-    Car car1 = Car("Diesel", "b1", "m1", "black", 15, 1500000, 6, "suv");
-    Bike bike1 = Bike("Petrol", "b2", "m2", "blue", 20, 200000, 250, "motorbike");
+
+    Car car1 = Car(Diesel, "b1", "m1", "black", 15, 1500000, 6, Suv);
+    Bike bike1 = Bike(Ev, "b2", "m2", "blue", 20, 200000, 250, MotorBike);
     // cout << car1;
     // cout << "\n";
     // cout << bike1;
@@ -133,10 +159,14 @@ int main()
     cout << (bike1.getNoOfWheels()) << endl;
 
     // TODO Compare Operations:
-    cout << (car1 > bike1) << endl;
-    cout << (car1 < bike1) << endl;
-    cout << (bike1 > car1) << endl;
-    cout << (bike1 < car1) << endl;
+    if ((car1 > bike1))
+    {
+        cout << "Bike1 is cheaper than Car1" << endl;
+    }
+    else
+    {
+        cout << "Car1 is cheaper than Bike1" << endl;
+    }
 
     return 0;
 }
