@@ -6,7 +6,7 @@ using namespace std;
 // 4 1 2 0 0
 // 2 0 0 0 0
 // 0 1 0 2 3
-// 0 0 1 1 0
+// 0 0 1 1 1
 
 int func(int N, int M, int **arr, int i, int j, int **flag);
 int leader(int *ptr, int size);
