@@ -3,20 +3,15 @@
 #include <unordered_map>
 using namespace std;
 
-enum BankType
-{
-    Private = 0,
-    Public,
-};
 class Bank
 {
 public:
     string name;
     string establishedDate;
-    BankType bankType;
+    bool bankType;
     string branchName;
     float interestRate;
-    Bank(string name, string establishedDate, BankType bankType, string branchName, float interestRate)
+    Bank(string name, string establishedDate, bool bankType, string branchName, float interestRate)
     {
         this->name = name;
         this->establishedDate = establishedDate;
@@ -40,10 +35,10 @@ public:
     {
         cout << "Name : " << name << endl;
         cout << "Established date : " << establishedDate << endl;
-        bankType == Private ? cout << "Bank Type : "
-                                   << "Private" << endl
-                            : cout << "Bank Type : "
-                                   << "Public" << endl;
+        bankType ? cout << "Bank Type : "
+                        << "Public" << endl
+                 : cout << "Bank Type : "
+                        << "Private" << endl;
 
         cout << "Branch Name : " << branchName << endl;
         cout << "Interest Rate : " << interestRate << "%" << endl;
@@ -102,7 +97,7 @@ public:
 class HDFC : public Bank, public Loan
 {
 public:
-    HDFC(string name, string establishedDate, BankType bankType, string branchName, float interestRate, vector<string> availableLoans)
+    HDFC(string name, string establishedDate, bool bankType, string branchName, float interestRate, vector<string> availableLoans)
         : Bank(name, establishedDate, bankType, branchName, interestRate), Loan(availableLoans)
     {
     }
@@ -110,10 +105,10 @@ public:
     {
         cout << "Name : " << name << endl;
         cout << "Established date : " << establishedDate << endl;
-        bankType == Private ? cout << "Bank Type : "
-                                   << "Private" << endl
-                            : cout << "Bank Type : "
-                                   << "Public" << endl;
+        bankType ? cout << "Bank Type : "
+                        << "Public" << endl
+                 : cout << "Bank Type : "
+                        << "Private" << endl;
 
         cout << "Branch Name : " << branchName << endl;
         cout << "Interest Rate : " << interestRate << "%" << endl;
@@ -125,7 +120,7 @@ public:
 class SBI : public Bank, public Loan
 {
 public:
-    SBI(string name, string establishedDate, BankType bankType, string branchName, float interestRate, vector<string> availableLoans)
+    SBI(string name, string establishedDate, bool bankType, string branchName, float interestRate, vector<string> availableLoans)
         : Bank(name, establishedDate, bankType, branchName, interestRate), Loan(availableLoans)
     {
     }
@@ -133,10 +128,10 @@ public:
     {
         cout << "Name : " << name << endl;
         cout << "Established date : " << establishedDate << endl;
-        bankType == Private ? cout << "Bank Type : "
-                                   << "Private" << endl
-                            : cout << "Bank Type : "
-                                   << "Public" << endl;
+        bankType ? cout << "Bank Type : "
+                        << "Public" << endl
+                 : cout << "Bank Type : "
+                        << "Private" << endl;
 
         cout << "Branch Name : " << branchName << endl;
         cout << "Interest Rate : " << interestRate << "%" << endl;
@@ -147,7 +142,7 @@ public:
 class ICICI : public Bank, public Loan
 {
 public:
-    ICICI(string name, string establishedDate, BankType bankType, string branchName, float interestRate, vector<string> availableLoans)
+    ICICI(string name, string establishedDate, bool bankType, string branchName, float interestRate, vector<string> availableLoans)
         : Bank(name, establishedDate, bankType, branchName, interestRate), Loan(availableLoans)
     {
     }
@@ -155,10 +150,10 @@ public:
     {
         cout << "Name : " << name << endl;
         cout << "Established date : " << establishedDate << endl;
-        bankType == Private ? cout << "Bank Type : "
-                                   << "Private" << endl
-                            : cout << "Bank Type : "
-                                   << "Public" << endl;
+        bankType ? cout << "Bank Type : "
+                        << "Public" << endl
+                 : cout << "Bank Type : "
+                        << "Private" << endl;
 
         cout << "Branch Name : " << branchName << endl;
         cout << "Interest Rate : " << interestRate << "%" << endl;
@@ -221,10 +216,10 @@ public:
     {
         cout << "Name : " << b1.name << endl;
         cout << "Established date : " << b1.establishedDate << endl;
-        b1.bankType == Private ? cout << "Bank Type : "
-                                      << "Private" << endl
-                               : cout << "Bank Type : "
-                                      << "Public" << endl;
+        b1.bankType ? cout << "Bank Type : "
+                           << "Public" << endl
+                    : cout << "Bank Type : "
+                           << "Private" << endl;
 
         cout << "Branch Name : " << b1.branchName << endl;
         cout << "Interest Rate : " << b1.interestRate << "%" << endl;
@@ -235,10 +230,10 @@ public:
         {
             cout << "Name : " << list[i].name << endl;
             cout << "Established date : " << list[i].establishedDate << endl;
-            list[i].bankType == Private ? cout << "Bank Type : "
-                                               << "Private" << endl
-                                        : cout << "Bank Type : "
-                                               << "Public" << endl;
+            list[i].bankType ? cout << "Bank Type : "
+                                    << "Public" << endl
+                             : cout << "Bank Type : "
+                                    << "Private" << endl;
 
             cout << "Branch Name : " << list[i].branchName << endl;
             cout << "Interest Rate : " << list[i].interestRate << "%\n"
@@ -248,9 +243,9 @@ public:
 };
 int main()
 {
-    HDFC hdfc1 = HDFC("HDFC", "04.05.2002", Public, "Namakkal", 13.7, {"goldLoan", "landLoan", "personalLoan"});
-    SBI sbi1 = SBI("SBI", "05.05.2002", Public, "Madurai", 12.4, {"goldLoan", "landLoan", "personalLoan"});
-    ICICI icici1 = ICICI("ICICI", "06.05.2002", Private, "Chennai", 14.5, {"goldLoan", "landLoan"});
+    HDFC hdfc1 = HDFC("HDFC", "04.05.2002", true, "Namakkal", 13.7, {"goldLoan", "landLoan", "personalLoan"});
+    SBI sbi1 = SBI("SBI", "05.05.2002", true, "Madurai", 12.4, {"goldLoan", "landLoan", "personalLoan"});
+    ICICI icici1 = ICICI("ICICI", "06.05.2002", false, "Chennai", 14.5, {"goldLoan", "landLoan"});
     Broker broker1;
 
     broker1.printDetails({hdfc1, sbi1, icici1});
