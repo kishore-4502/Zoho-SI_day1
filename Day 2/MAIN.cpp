@@ -224,9 +224,9 @@ public:
         cout << "Branch Name : " << b1.branchName << endl;
         cout << "Interest Rate : " << b1.interestRate << "%" << endl;
     }
-    void printDetails(vector<Bank> list)
+    void printDetails(Bank list[], int size)
     {
-        for (int i = 0; i < list.size(); i++)
+        for (int i = 0; i < size; i++)
         {
             cout << "Name : " << list[i].name << endl;
             cout << "Established date : " << list[i].establishedDate << endl;
@@ -247,8 +247,10 @@ int main()
     SBI sbi1 = SBI("SBI", "05.05.2002", true, "Madurai", 12.4, {"goldLoan", "landLoan", "personalLoan"});
     ICICI icici1 = ICICI("ICICI", "06.05.2002", false, "Chennai", 14.5, {"goldLoan", "landLoan"});
     Broker broker1;
-
-    broker1.printDetails({hdfc1, sbi1, icici1});
+    Bank arr[] = {hdfc1, sbi1, icici1};
+    int size = sizeof(arr) / sizeof(Bank);
+    broker1.printDetails(arr, size);
     broker1.compare(hdfc1, sbi1, icici1);
+
     return 0;
 }
