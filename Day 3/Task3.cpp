@@ -1,31 +1,32 @@
-#include<iostream>
-#include<memory>
+#include <iostream>
+#include <memory>
 using namespace std;
 
-int main(){
-	// Unique Pointers
-	{
-		unique_ptr<int> unPtr=make_unique<int>(25);
-		cout<<*unPtr<<endl;
-	}
+shared_ptr<string> mect = make_shared<string>("Mechatronics");
 
-	// Shared Pointers
+class Student
+{
+public:
+	unique_ptr<int> rollNo = make_unique<int>(0);
+	shared_ptr<string> department;
+	Student(int rollNo)
 	{
-		shared_ptr<int> shPtr1=make_shared<int>(12);
-		shared_ptr<int> shPtr2=shPtr1;
-		cout<<*shPtr1<<endl;
-		cout<<*shPtr2<<endl;
-		cout<<"No of owners : "<<shPtr1.use_count()<<endl;
+		*(this->rollNo) = rollNo;
+		department = mect;
 	}
+	~Student()
+	{
+		cout << "Destroyed " << *rollNo << endl;
+	}
+};
 
-	// Weak Pointers
-	weak_ptr<int> wp;
-	{
-		shared_ptr<int> shPtr1=make_shared<int>(2);
-		wp=shPtr1;
-		cout<<"No of owners : "<<shPtr1.use_count()<<endl;
-	}
-	
+int main()
+{
+
+	Student s1(1);
+	Student s2(2);
+	Student s3(3);
+	cout << "No of Students : " << mect.use_count() - 1 << endl;
 
 	return 0;
 }
