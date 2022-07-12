@@ -1,11 +1,30 @@
 #include <bits/stdc++.h>
 using namespace std;
-
 enum Sensors
 {
-	TempSensor,
+	TempSensor = 0,
 	LDRsensor,
+	MotionSensor,
+
 };
+class Automation
+{
+public:
+	Sensors sensor;
+	char operation;
+	int sensorValue;
+	Automation(Sensors x, char y, int z)
+	{
+		sensor = x;
+		operation = y;
+		sensorValue = z;
+	}
+};
+void doAutomations(vector<Automation> ToDo);
+
+string deviceNames[] = {"Fan", "Light", "Door"};
+string sensorNames[] = {"Temperature sensor", "LDR sensor", "Motion Sensor"};
+int sensorThreshold[] = {25, 200, 3};
 
 class Sensor
 {
@@ -26,6 +45,9 @@ public:
 	{
 		isConnected = false;
 	}
+};
+class Device
+{
 };
 
 class TempSensor : public Sensor
@@ -83,7 +105,7 @@ public:
 	}
 };
 
-class Fan : public TempSensor
+class Fan : public TempSensor, Device
 {
 	bool status = false;
 
@@ -106,7 +128,7 @@ public:
 	}
 };
 
-class Light : public LDRsensor
+class Light : public LDRsensor, Device
 {
 public:
 	bool status;
@@ -154,7 +176,7 @@ public:
 	}
 };
 
-class Door : public MotionSensor
+class Door : public MotionSensor, Device
 {
 public:
 	bool status;
@@ -175,7 +197,44 @@ public:
 			cout << "The door is CLOSED" << endl;
 	}
 };
-// void automate(Sensors x, std::function y, int z)
+
+class ClientApplication
+{
+public:
+	void doAutomations(vector<Automation> ToDo)
+	{
+		bool status[ToDo.size()];
+		for (int i = 0; i < ToDo.size(); i++)
+		{
+			Automation a = ToDo[i];
+			int threshold = sensorThreshold[a.sensor];
+			if (a.operation == '<')
+			{
+				status[i] = a.sensorValue < threshold;
+			}
+			if (a.operation == '>')
+			{
+				status[i] = a.sensorValue > threshold;
+			}
+			if (a.operation == '=')
+			{
+				status[i] = a.sensorValue == threshold;
+			}
+		}
+		for (int i = 0; i < ToDo.size(); i++)
+		{
+			if (status[i])
+			{
+				cout << deviceNames[ToDo[i].sensor] << " : OFF" << endl;
+			}
+			else
+			{
+				cout << deviceNames[ToDo[i].sensor] << " : ON" << endl;
+			}
+		}
+	}
+};
+
 int main()
 {
 	// For Fan(status,temperature):
@@ -215,5 +274,19 @@ int main()
 	d1.changeDistance(3);
 	d1.doorStatus();
 
+	// Automation
+
+	cout << "\n"
+		 << "Doing automations!"
+		 << endl;
+	vector<Automation> Vect;
+	Automation a1(TempSensor, '<', 20);
+	Automation a2(LDRsensor, '<', 251);
+	Automation a3(MotionSensor, '=', 4);
+	Vect.push_back(a1);
+	Vect.push_back(a2);
+	Vect.push_back(a3);
+	ClientApplication client = ClientApplication();
+	client.doAutomations(Vect);
 	return 0;
 }
