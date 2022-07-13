@@ -262,10 +262,28 @@ public:
 			}
 		}
 	}
+	void connectDevices(vector<Sensor> sen)
+	{
+		for (int i = 0; i < sen.size(); i++)
+		{
+			sen[i].connectSensor();
+		}
+		cout << "All sensors are connected to the devices through Client Application" << endl;
+	}
+	void disconnectDevices(vector<Sensor> sen)
+	{
+		for (int i = 0; i < sen.size(); i++)
+		{
+			sen[i].disconnectSensor();
+		}
+		cout << "\nDisconnected" << endl;
+	}
 };
 
 int main()
 {
+	cout << "\n"
+		 << endl;
 	// For Fan(status,temperature):
 	Fan f1(false, 20);
 	f1.fanStatus();
@@ -306,7 +324,6 @@ int main()
 	// Automation
 
 	cout << "\n"
-		 << "Doing automations!"
 		 << endl;
 	vector<Automation> Vect;
 	Automation a1(TemperatureSensor, '<', 20);
@@ -316,19 +333,21 @@ int main()
 	Vect.push_back(a2);
 	Vect.push_back(a3);
 	ClientApplication client = ClientApplication();
+	vector<Sensor> sensorsAvailable;
+	TempSensor tempsen1(26);
+	LDRsensor ldr(249);
+	MotionSensor irsen(2);
+	sensorsAvailable.push_back(tempsen1);
+	sensorsAvailable.push_back(ldr);
+	sensorsAvailable.push_back(irsen);
+	// Connect Sensors
+	client.connectDevices(sensorsAvailable);
 	client.doAutomations(Vect);
 
 	// Report status
 	cout << "\n"
 		 << "Status:" << endl;
 
-	TempSensor tempsen1(23);
-	LDRsensor ldr(251);
-	MotionSensor irsen(4);
-	vector<Sensor> sensorsAvailable;
-	sensorsAvailable.push_back(tempsen1);
-	sensorsAvailable.push_back(ldr);
-	sensorsAvailable.push_back(irsen);
 	client.report(sensorsAvailable);
 	return 0;
 }
