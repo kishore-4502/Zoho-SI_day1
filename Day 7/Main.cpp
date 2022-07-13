@@ -7,21 +7,6 @@ enum Sensors
 	IRSensor,
 
 };
-class Automation
-{
-public:
-	Sensors sensor;
-	char operation;
-	int sensorValue;
-	Automation(Sensors x, char y, int z)
-	{
-		sensor = x;
-		operation = y;
-		sensorValue = z;
-	}
-};
-void doAutomations(vector<Automation> ToDo);
-
 string deviceNames[] = {"Fan", "Light", "Door"};
 string sensorNames[] = {"Temperature sensor", "LDR sensor", "Motion Sensor"};
 int sensorThreshold[] = {25, 200, 3};
@@ -99,6 +84,30 @@ public:
 		action(value);
 	}
 };
+class MotionSensor : public Sensor
+{
+public:
+	int threshold;
+	std::function<void(int)> action;
+	MotionSensor(int distance)
+		: Sensor(IRSensor, false, distance)
+	{
+	}
+	int getDistance()
+	{
+		return value;
+	}
+	void Listener(int threshold, const std::function<void(int)> &action)
+	{
+		this->action = action;
+		this->threshold = threshold;
+	}
+	void changeDistance(int dis)
+	{
+		this->value = dis;
+		action(value);
+	}
+};
 
 class Fan : public TempSensor
 {
@@ -145,31 +154,6 @@ public:
 	}
 };
 
-class MotionSensor : public Sensor
-{
-public:
-	int threshold;
-	std::function<void(int)> action;
-	MotionSensor(int distance)
-		: Sensor(IRSensor, false, distance)
-	{
-	}
-	int getDistance()
-	{
-		return value;
-	}
-	void Listener(int threshold, const std::function<void(int)> &action)
-	{
-		this->action = action;
-		this->threshold = threshold;
-	}
-	void changeDistance(int dis)
-	{
-		this->value = dis;
-		action(value);
-	}
-};
-
 class Door : public MotionSensor
 {
 public:
@@ -185,56 +169,16 @@ public:
 	}
 	void doorStatus()
 	{
+		if (!status)
+			cout << "The door is CLOSED" << endl;
 		if (status)
 			cout << "The door is OPEN." << endl;
-		else
-			cout << "The door is CLOSED" << endl;
 	}
 };
 
 class ClientApplication
 {
 public:
-	void doAutomations(vector<Automation> ToDo)
-	{
-		bool status[ToDo.size()];
-		for (int i = 0; i < ToDo.size(); i++)
-		{
-			Automation a = ToDo[i];
-			int threshold = sensorThreshold[a.sensor];
-			if (a.operation == '<')
-			{
-				status[i] = a.sensorValue < threshold;
-			}
-			if (a.operation == '>')
-			{
-				status[i] = a.sensorValue > threshold;
-			}
-			if (a.operation == '=')
-			{
-				status[i] = a.sensorValue == threshold;
-			}
-		}
-		for (int i = 0; i < ToDo.size(); i++)
-		{
-			if (status[i])
-			{
-				if (deviceNames[ToDo[i].sensor] == "Door")
-				{
-					cout << deviceNames[ToDo[i].sensor] << " : OPEN" << endl;
-				}
-				else
-					cout << deviceNames[ToDo[i].sensor] << " : OFF" << endl;
-			}
-			else
-			{
-				if (deviceNames[ToDo[i].sensor] == "Door")
-					cout << deviceNames[ToDo[i].sensor] << " : CLOSED" << endl;
-				else
-					cout << deviceNames[ToDo[i].sensor] << " : ON" << endl;
-			}
-		}
-	}
 	void report(vector<Sensor> sen)
 	{
 		bool status[sen.size()];
@@ -247,9 +191,9 @@ public:
 			if (status[i])
 			{
 				if (deviceNames[sen[i].name] == "Door")
-				{
 					cout << deviceNames[sen[i].name] << " : CLOSED" << endl;
-				}
+				else if (deviceNames[sen[i].name] == "Light")
+					cout << deviceNames[sen[i].name] << " : OFF" << endl;
 				else
 					cout << deviceNames[sen[i].name] << " : ON" << endl;
 			}
@@ -257,6 +201,8 @@ public:
 			{
 				if (deviceNames[sen[i].name] == "Door")
 					cout << deviceNames[sen[i].name] << " : OPEN" << endl;
+				else if (deviceNames[sen[i].name] == "Light")
+					cout << deviceNames[sen[i].name] << " : ON" << endl;
 				else
 					cout << deviceNames[sen[i].name] << " : OFF" << endl;
 			}
@@ -282,72 +228,146 @@ public:
 
 int main()
 {
-	cout << "\n"
-		 << endl;
-	// For Fan(status,temperature):
-	Fan f1(false, 20);
-	f1.fanStatus();
-	int fanThreshold = 25;
-	f1.Listener(fanThreshold, [fanThreshold, &f1](int temperature)
-				{
-		if(temperature>=fanThreshold){
-			f1.setStatus(true);
-		} });
-	f1.increaseTemp(26);
-	f1.fanStatus();
-
-	// For Light
-	Light l1(false, 200);
-	l1.lightStatus();
-	int lightThreshold = 250;
-	l1.Listener(lightThreshold, [&](int intensity)
-				{
-		if(intensity>=lightThreshold){
-			l1.setStatus(true);
-		} });
-	l1.increaseIntensity(251);
-	l1.lightStatus();
-
-	// For Door
-	Door d1(false, 10);
-	d1.doorStatus();
-	int doorThreshold = 3;
-	d1.Listener(doorThreshold, [doorThreshold, &d1](int distance)
-				{
-		if (distance <= doorThreshold)
-		{
-			d1.setStatus(true);
-} });
-	d1.changeDistance(3);
-	d1.doorStatus();
-
-	// Automation
-
-	cout << "\n"
-		 << endl;
-	vector<Automation> Vect;
-	Automation a1(TemperatureSensor, '<', 20);
-	Automation a2(LDRSensor, '<', 251);
-	Automation a3(IRSensor, '=', 3);
-	Vect.push_back(a1);
-	Vect.push_back(a2);
-	Vect.push_back(a3);
 	ClientApplication client = ClientApplication();
+	TempSensor tempsen1(0);
+	LDRsensor ldr(INT_MAX);
+	MotionSensor irsen(INT_MAX);
+	Fan f1(false, 0);
+	Light l1(false, INT_MAX);
+	Door d1(false, INT_MAX);
+
 	vector<Sensor> sensorsAvailable;
-	TempSensor tempsen1(26);
-	LDRsensor ldr(249);
-	MotionSensor irsen(2);
 	sensorsAvailable.push_back(tempsen1);
 	sensorsAvailable.push_back(ldr);
 	sensorsAvailable.push_back(irsen);
-	// Connect Sensors
+
 	client.connectDevices(sensorsAvailable);
-	client.doAutomations(Vect);
-
-	// Report status
-	cout << "\n"
-		 << "Status:" << endl;
-
 	client.report(sensorsAvailable);
+	cout << "\n"
+		 << endl;
+
+	// Setting Thresholds:
+	int fanThreshold = 25;
+	f1.Listener(fanThreshold, [fanThreshold, &f1](int temperature)
+				{
+			if(temperature>=fanThreshold){
+					sensorThreshold[0]=fanThreshold;
+					f1.setStatus(true);
+			} });
+	int lightThreshold = 200;
+	l1.Listener(lightThreshold, [&](int intensity)
+				{
+			if(intensity<=lightThreshold){
+				sensorThreshold[1] = lightThreshold;
+				l1.setStatus(true);
+			} });
+	int doorThreshold = 3;
+	d1.Listener(doorThreshold, [doorThreshold, &d1](int distance)
+				{
+			if (distance <= doorThreshold)
+			{
+				sensorThreshold[2] = doorThreshold;
+				d1.setStatus(true);
+	} });
+
+	// Interface
+	while (1)
+	{
+		int input;
+		cout << "1. Increase Value" << endl;
+		cout << "2. Decrease Value" << endl;
+		cout << "3. Connect Device" << endl;
+		cout << "4. Disconnect Device" << endl;
+		cout << "5. Change Settings" << endl;
+		cin >> input;
+		if (input == 1 || input == 2)
+		{
+			cout << "Please Select the sensor" << endl;
+			int input2;
+			cout << "1.Temperature Sensor" << endl;
+			cout << "2.LDR Sensor" << endl;
+			cout << "3.Motion Sensor" << endl;
+			cin >> input2;
+			cout << "Please Enter the value" << endl;
+			int val;
+			cin >> val;
+			if (input2 == 1)
+			{
+				f1.increaseTemp(val);
+				f1.fanStatus();
+			}
+			else if (input2 == 2)
+			{
+				l1.increaseIntensity(val);
+				l1.lightStatus();
+			}
+			else if (input2 == 3)
+			{
+				d1.changeDistance(val);
+				d1.doorStatus();
+			}
+			else
+			{
+				cout << "Invalid input" << endl;
+			}
+		}
+		else if (input == 3)
+		{
+			client.connectDevices(sensorsAvailable);
+		}
+		else if (input == 4)
+		{
+			client.disconnectDevices(sensorsAvailable);
+		}
+		else if (input == 5)
+		{
+			cout << "Please Select the sensor" << endl;
+			int input2;
+			cout << "1.Temperature Sensor" << endl;
+			cout << "2.LDR Sensor" << endl;
+			cout << "3.Motion Sensor" << endl;
+			cin >> input2;
+			cout << "Please Enter the new threshold value" << endl;
+			int val;
+			cin >> val;
+			if (input2 == 1)
+			{
+				f1.Listener(val, [&](int temperature)
+							{
+			if(temperature>=val){
+				sensorThreshold[0] = val;
+				f1.setStatus(true);
+			} });
+			}
+			else if (input2 == 2)
+			{
+				l1.Listener(val, [&](int intensity)
+							{
+			if(intensity<=val){
+				sensorThreshold[1] = val;
+				l1.setStatus(true);
+			} });
+			}
+			else if (input2 == 3)
+			{
+				d1.Listener(val, [&](int distance)
+							{
+			if (distance <= val)
+			{
+				sensorThreshold[2] = val;
+				d1.setStatus(true);
+	} });
+			}
+			else
+			{
+				cout << "Invalid input" << endl;
+			}
+		}
+		else
+		{
+			cout << "Invalid Input" << endl;
+		}
+	}
+
 	return 0;
 }

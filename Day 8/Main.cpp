@@ -33,7 +33,6 @@ public:
         this->STDcode = STDcode;
         this->billAmount = billAmount;
         this->refNumber = to_string(STDcode) + to_string(lanNumber);
-        cout << refNumber << endl;
     }
     void payBills()
     {
