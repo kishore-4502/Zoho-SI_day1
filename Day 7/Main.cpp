@@ -325,6 +325,7 @@ int main()
 		else if (input == 4)
 		{
 			client.disconnectDevices(sensorsAvailable);
+			break;
 		}
 		else if (input == 5)
 		{
