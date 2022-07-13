@@ -225,11 +225,19 @@ public:
 		{
 			if (status[i])
 			{
-				cout << deviceNames[ToDo[i].sensor] << " : OFF" << endl;
+				if (deviceNames[ToDo[i].sensor] == "Door")
+				{
+					cout << deviceNames[ToDo[i].sensor] << " : OPEN" << endl;
+				}
+				else
+					cout << deviceNames[ToDo[i].sensor] << " : OFF" << endl;
 			}
 			else
 			{
-				cout << deviceNames[ToDo[i].sensor] << " : ON" << endl;
+				if (deviceNames[ToDo[i].sensor] == "Door")
+					cout << deviceNames[ToDo[i].sensor] << " : CLOSED" << endl;
+				else
+					cout << deviceNames[ToDo[i].sensor] << " : ON" << endl;
 			}
 		}
 	}
@@ -282,7 +290,7 @@ int main()
 	vector<Automation> Vect;
 	Automation a1(TempSensor, '<', 20);
 	Automation a2(LDRsensor, '<', 251);
-	Automation a3(MotionSensor, '=', 4);
+	Automation a3(MotionSensor, '=', 3);
 	Vect.push_back(a1);
 	Vect.push_back(a2);
 	Vect.push_back(a3);
