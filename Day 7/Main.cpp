@@ -2,9 +2,9 @@
 using namespace std;
 enum Sensors
 {
-	TempSensor = 0,
-	LDRsensor,
-	MotionSensor,
+	TemperatureSensor = 0,
+	LDRSensor,
+	IRSensor,
 
 };
 class Automation
@@ -29,13 +29,15 @@ int sensorThreshold[] = {25, 200, 3};
 class Sensor
 {
 public:
-	string name;
+	int value;
+	Sensors name;
 	bool isConnected;
 
-	Sensor(string name, bool isConnected)
+	Sensor(Sensors name, bool isConnected, int value)
 	{
 		this->name = name;
 		this->isConnected = isConnected;
+		this->value = value;
 	}
 	void connectSensor()
 	{
@@ -46,24 +48,19 @@ public:
 		isConnected = false;
 	}
 };
-class Device
-{
-};
 
 class TempSensor : public Sensor
 {
 public:
-	int temperature;
 	int threshold;
 	std::function<void(int)> action;
 
-	TempSensor(int temperature) : Sensor("Temperature Sensor", true)
+	TempSensor(int temperature) : Sensor(TemperatureSensor, false, temperature)
 	{
-		this->temperature = temperature;
 	}
 	int getTemperature()
 	{
-		return temperature;
+		return value;
 	}
 
 	void Listener(int threshold, const std::function<void(int)> &action)
@@ -73,25 +70,23 @@ public:
 	}
 	void increaseTemp(int x)
 	{
-		temperature = x;
-		action(temperature);
+		value = x;
+		action(value);
 	}
 };
 
 class LDRsensor : public Sensor
 {
 public:
-	int lightIntensity;
 	int threshold;
 	std::function<void(int)> action;
 
-	LDRsensor(int lightIntensity) : Sensor("LDR Sensor", true)
+	LDRsensor(int lightIntensity) : Sensor(LDRSensor, false, lightIntensity)
 	{
-		this->lightIntensity = lightIntensity;
 	}
 	int getLightIntensity()
 	{
-		return lightIntensity;
+		return value;
 	}
 	void Listener(int threshold, const std::function<void(int)> &action)
 	{
@@ -100,12 +95,12 @@ public:
 	}
 	void increaseIntensity(int x)
 	{
-		lightIntensity = x;
-		action(lightIntensity);
+		value = x;
+		action(value);
 	}
 };
 
-class Fan : public TempSensor, Device
+class Fan : public TempSensor
 {
 	bool status = false;
 
@@ -128,7 +123,7 @@ public:
 	}
 };
 
-class Light : public LDRsensor, Device
+class Light : public LDRsensor
 {
 public:
 	bool status;
@@ -150,19 +145,18 @@ public:
 	}
 };
 
-class MotionSensor
+class MotionSensor : public Sensor
 {
 public:
-	int distance;
 	int threshold;
 	std::function<void(int)> action;
 	MotionSensor(int distance)
+		: Sensor(IRSensor, false, distance)
 	{
-		this->distance = distance;
 	}
 	int getDistance()
 	{
-		return distance;
+		return value;
 	}
 	void Listener(int threshold, const std::function<void(int)> &action)
 	{
@@ -171,12 +165,12 @@ public:
 	}
 	void changeDistance(int dis)
 	{
-		this->distance = dis;
-		action(distance);
+		this->value = dis;
+		action(value);
 	}
 };
 
-class Door : public MotionSensor, Device
+class Door : public MotionSensor
 {
 public:
 	bool status;
@@ -241,6 +235,33 @@ public:
 			}
 		}
 	}
+	void report(vector<Sensor> sen)
+	{
+		bool status[sen.size()];
+		for (int i = 0; i < sen.size(); i++)
+		{
+			status[i] = sen[i].value > sensorThreshold[sen[i].name];
+		}
+		for (int i = 0; i < sen.size(); i++)
+		{
+			if (status[i])
+			{
+				if (deviceNames[sen[i].name] == "Door")
+				{
+					cout << deviceNames[sen[i].name] << " : CLOSED" << endl;
+				}
+				else
+					cout << deviceNames[sen[i].name] << " : ON" << endl;
+			}
+			else
+			{
+				if (deviceNames[sen[i].name] == "Door")
+					cout << deviceNames[sen[i].name] << " : OPEN" << endl;
+				else
+					cout << deviceNames[sen[i].name] << " : OFF" << endl;
+			}
+		}
+	}
 };
 
 int main()
@@ -288,13 +309,26 @@ int main()
 		 << "Doing automations!"
 		 << endl;
 	vector<Automation> Vect;
-	Automation a1(TempSensor, '<', 20);
-	Automation a2(LDRsensor, '<', 251);
-	Automation a3(MotionSensor, '=', 3);
+	Automation a1(TemperatureSensor, '<', 20);
+	Automation a2(LDRSensor, '<', 251);
+	Automation a3(IRSensor, '=', 3);
 	Vect.push_back(a1);
 	Vect.push_back(a2);
 	Vect.push_back(a3);
 	ClientApplication client = ClientApplication();
 	client.doAutomations(Vect);
+
+	// Report status
+	cout << "\n"
+		 << "Status:" << endl;
+
+	TempSensor tempsen1(23);
+	LDRsensor ldr(251);
+	MotionSensor irsen(4);
+	vector<Sensor> sensorsAvailable;
+	sensorsAvailable.push_back(tempsen1);
+	sensorsAvailable.push_back(ldr);
+	sensorsAvailable.push_back(irsen);
+	client.report(sensorsAvailable);
 	return 0;
 }
