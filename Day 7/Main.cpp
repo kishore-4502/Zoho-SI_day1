@@ -52,6 +52,7 @@ public:
 	{
 		this->action = action;
 		this->threshold = threshold;
+		sensorThreshold[0] = threshold;
 	}
 	void increaseTemp(int x)
 	{
@@ -77,6 +78,7 @@ public:
 	{
 		this->action = action;
 		this->threshold = threshold;
+		sensorThreshold[1] = threshold;
 	}
 	void increaseIntensity(int x)
 	{
@@ -101,6 +103,7 @@ public:
 	{
 		this->action = action;
 		this->threshold = threshold;
+		sensorThreshold[2] = threshold;
 	}
 	void changeDistance(int dis)
 	{
@@ -252,23 +255,26 @@ int main()
 	f1.Listener(fanThreshold, [fanThreshold, &f1](int temperature)
 				{
 			if(temperature>=fanThreshold){
-					sensorThreshold[0]=fanThreshold;
 					f1.setStatus(true);
+			} else{
+				f1.setStatus(false);
 			} });
 	int lightThreshold = 200;
 	l1.Listener(lightThreshold, [&](int intensity)
 				{
 			if(intensity<=lightThreshold){
-				sensorThreshold[1] = lightThreshold;
 				l1.setStatus(true);
+			}else{
+				l1.setStatus(false);
 			} });
 	int doorThreshold = 3;
 	d1.Listener(doorThreshold, [doorThreshold, &d1](int distance)
 				{
 			if (distance <= doorThreshold)
 			{
-				sensorThreshold[2] = doorThreshold;
 				d1.setStatus(true);
+	}else{
+		d1.setStatus(false);
 	} });
 
 	// Interface
@@ -338,6 +344,8 @@ int main()
 			if(temperature>=val){
 				sensorThreshold[0] = val;
 				f1.setStatus(true);
+			}else{
+				f1.setStatus(false);
 			} });
 			}
 			else if (input2 == 2)
@@ -347,6 +355,8 @@ int main()
 			if(intensity<=val){
 				sensorThreshold[1] = val;
 				l1.setStatus(true);
+			}else{
+				l1.setStatus(false);
 			} });
 			}
 			else if (input2 == 3)
@@ -357,6 +367,8 @@ int main()
 			{
 				sensorThreshold[2] = val;
 				d1.setStatus(true);
+	}else{
+		d1.setStatus(false);
 	} });
 			}
 			else
