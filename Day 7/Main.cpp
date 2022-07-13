@@ -214,7 +214,7 @@ public:
 		{
 			sen[i].connectSensor();
 		}
-		cout << "All sensors are connected to the devices through Client Application" << endl;
+		cout << "All sensors are connected to the devices with Client Application" << endl;
 	}
 	void disconnectDevices(vector<Sensor> sen)
 	{
@@ -222,7 +222,8 @@ public:
 		{
 			sen[i].disconnectSensor();
 		}
-		cout << "\nDisconnected" << endl;
+		cout << "\nDisconnected\n"
+			 << endl;
 	}
 };
 
