@@ -40,7 +40,7 @@ public:
 	int threshold;
 	std::function<void(int)> action;
 
-	TempSensor(int temperature) : Sensor(TemperatureSensor, false, temperature)
+	TempSensor(int temperature) : Sensor(TemperatureSensor, true, temperature)
 	{
 	}
 	int getTemperature()
@@ -67,7 +67,7 @@ public:
 	int threshold;
 	std::function<void(int)> action;
 
-	LDRsensor(int lightIntensity) : Sensor(LDRSensor, false, lightIntensity)
+	LDRsensor(int lightIntensity) : Sensor(LDRSensor, true, lightIntensity)
 	{
 	}
 	int getLightIntensity()
@@ -92,7 +92,7 @@ public:
 	int threshold;
 	std::function<void(int)> action;
 	MotionSensor(int distance)
-		: Sensor(IRSensor, false, distance)
+		: Sensor(IRSensor, true, distance)
 	{
 	}
 	int getDistance()
@@ -233,20 +233,9 @@ public:
 int main()
 {
 	ClientApplication client = ClientApplication();
-	TempSensor tempsen1(0);
-	LDRsensor ldr(INT_MAX);
-	MotionSensor irsen(INT_MAX);
 	Fan f1(false, 0);
 	Light l1(false, INT_MAX);
 	Door d1(false, INT_MAX);
-
-	vector<Sensor> sensorsAvailable;
-	sensorsAvailable.push_back(tempsen1);
-	sensorsAvailable.push_back(ldr);
-	sensorsAvailable.push_back(irsen);
-
-	client.connectDevices(sensorsAvailable);
-	client.report(sensorsAvailable);
 	cout << "\n"
 		 << endl;
 
@@ -281,37 +270,133 @@ int main()
 	while (1)
 	{
 		int input;
-		cout << "1. Increase Value" << endl;
-		cout << "2. Decrease Value" << endl;
-		cout << "3. Connect Device" << endl;
-		cout << "4. Disconnect Device" << endl;
-		cout << "5. Change Settings" << endl;
+		cout << "1. Change Value" << endl;
+		cout << "2. Connect Device" << endl;
+		cout << "3. Disconnect Device" << endl;
+		cout << "4. Change Threshold values" << endl;
 		cin >> input;
-		if (input == 1 || input == 2)
+		if (input == 1)
 		{
 			cout << "Please Select the sensor" << endl;
 			int input2;
-			cout << "1.Temperature Sensor" << endl;
-			cout << "2.LDR Sensor" << endl;
-			cout << "3.Motion Sensor" << endl;
+			if (f1.isConnected)
+				cout << "1.Temperature Sensor" << endl;
+			if (l1.isConnected)
+				cout << "2.LDR Sensor" << endl;
+			if (d1.isConnected)
+				cout << "3.Motion Sensor" << endl;
 			cin >> input2;
-			cout << "Please Enter the value" << endl;
-			int val;
-			cin >> val;
 			if (input2 == 1)
 			{
-				f1.increaseTemp(val);
-				f1.fanStatus();
+				if (f1.isConnected)
+				{
+					cout << "Please Enter the value" << endl;
+					string val;
+					cin >> val;
+					int newValue;
+					if (val == "++")
+					{
+						newValue = f1.value + 10;
+					}
+					else if (val == "--")
+					{
+						newValue = f1.value - 10;
+					}
+					else
+					{
+						stringstream converter(val);
+						converter >> newValue;
+					}
+					f1.increaseTemp(newValue);
+					f1.fanStatus();
+				}
+				else
+				{
+					cout << "Temperature sensor is not connected" << endl;
+				}
 			}
 			else if (input2 == 2)
 			{
-				l1.increaseIntensity(val);
-				l1.lightStatus();
+				if (l1.isConnected)
+				{
+					cout << "Please Enter the value" << endl;
+					string val;
+					cin >> val;
+					int newValue;
+					if (val == "++")
+					{
+						newValue = l1.value + 10;
+					}
+					else if (val == "--")
+					{
+						newValue = l1.value - 10;
+					}
+					else
+					{
+						stringstream converter(val);
+						converter >> newValue;
+					}
+					l1.increaseIntensity(newValue);
+					l1.lightStatus();
+				}
+				else
+				{
+					cout << "LDR sensor is not connected" << endl;
+				}
 			}
 			else if (input2 == 3)
 			{
-				d1.changeDistance(val);
-				d1.doorStatus();
+				if (d1.isConnected)
+				{
+					cout << "Please Enter the value" << endl;
+					string val;
+					cin >> val;
+					int newValue;
+					if (val == "++")
+					{
+						newValue = d1.value + 10;
+					}
+					else if (val == "--")
+					{
+						newValue = d1.value - 10;
+					}
+					else
+					{
+						stringstream converter(val);
+						converter >> newValue;
+					}
+					d1.changeDistance(newValue);
+					d1.doorStatus();
+				}
+				else
+				{
+					cout << "Motion sensor is not connected" << endl;
+				}
+			}
+			else
+			{
+				cout << "Invalid input" << endl;
+			}
+		}
+		else if (input == 2)
+		{
+			cout << "Please Select the sensor" << endl;
+			int input;
+			cout << "1.Temperature Sensor" << endl;
+			cout << "2.LDR Sensor" << endl;
+			cout << "3.Motion Sensor" << endl;
+			cin >> input;
+			if (input == 1)
+			{
+				f1.isConnected = true;
+			}
+			else if (input == 2)
+			{
+				l1.isConnected = true;
+			}
+			else if (input == 3)
+			{
+				d1.isConnected = true;
 			}
 			else
 			{
@@ -320,14 +405,30 @@ int main()
 		}
 		else if (input == 3)
 		{
-			client.connectDevices(sensorsAvailable);
+			cout << "Please Select the sensor" << endl;
+			int input;
+			cout << "1.Temperature Sensor" << endl;
+			cout << "2.LDR Sensor" << endl;
+			cout << "3.Motion Sensor" << endl;
+			cin >> input;
+			if (input == 1)
+			{
+				f1.isConnected = false;
+			}
+			else if (input == 2)
+			{
+				l1.isConnected = false;
+			}
+			else if (input == 3)
+			{
+				d1.isConnected = false;
+			}
+			else
+			{
+				cout << "Invalid input" << endl;
+			}
 		}
 		else if (input == 4)
-		{
-			client.disconnectDevices(sensorsAvailable);
-			break;
-		}
-		else if (input == 5)
 		{
 			cout << "Please Select the sensor" << endl;
 			int input2;

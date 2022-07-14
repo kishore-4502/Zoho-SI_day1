@@ -51,6 +51,13 @@ public:
     {
         Users.push_back(x);
     }
+    void display()
+    {
+        for (int i = 0; i < Users.size(); i++)
+        {
+            cout << Users[i].refNumber << " : " << Users[i].billAmount << endl;
+        }
+    }
     void payBill(string num)
     {
         for (int i = 0; i < Users.size(); i++)
@@ -154,6 +161,20 @@ int main()
         else if (input == 5)
         {
             break;
+        }
+        else if (input == 6)
+        {
+            int num;
+            cout << "Please enter 1 for mobile, 2 for landline" << endl;
+            cin >> num;
+            if (num == 1)
+            {
+                manager1.display();
+            }
+            if (num == 2)
+            {
+                manager2.display();
+            }
         }
         else
         {
