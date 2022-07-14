@@ -234,8 +234,8 @@ int main()
 {
 	ClientApplication client = ClientApplication();
 	Fan f1(false, 0);
-	Light l1(false, INT_MAX);
-	Door d1(false, INT_MAX);
+	Light l1(false, 300);
+	Door d1(false, 20);
 	cout << "\n"
 		 << endl;
 
@@ -274,17 +274,25 @@ int main()
 		cout << "2. Connect Device" << endl;
 		cout << "3. Disconnect Device" << endl;
 		cout << "4. Change Threshold values" << endl;
+		cout << "5. Exit" << endl;
 		cin >> input;
 		if (input == 1)
 		{
 			cout << "Please Select the sensor" << endl;
 			int input2;
 			if (f1.isConnected)
-				cout << "1.Temperature Sensor" << endl;
+				cout << "1.Temperature Sensor (" << f1.value << ")" << endl;
+			else
+				cout
+					<< "1.Temperature Sensor - Disconnected" << endl;
 			if (l1.isConnected)
-				cout << "2.LDR Sensor" << endl;
+				cout << "2.LDR Sensor (" << l1.value << ")" << endl;
+			else
+				cout << "2.LDR Sensor - Disconnected" << endl;
 			if (d1.isConnected)
-				cout << "3.Motion Sensor" << endl;
+				cout << "3.Motion Sensor (" << d1.value << ")" << endl;
+			else
+				cout << "3.Motion Sensor - Disconnected" << endl;
 			cin >> input2;
 			if (input2 == 1)
 			{
