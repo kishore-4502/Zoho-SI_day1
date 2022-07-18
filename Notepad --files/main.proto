@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+message User{
+    string userName=1;
+    string password=2;
+    string email=3;
+    int32 age=4;
+    string location=5;
+    string userId=6;
+}
+
+message UserList{
+    repeated User users=1;
+}
+
+
+message Project{
+    string name=1;
+    int32 id=2;
+    string userId=3;
+    repeated string text=4;
+}
+
+message Notepad{
+    repeated Project projects=1;
+}
+
+message Version{
+    int32 changesCount=1;
+    int32 versionNumber=2;
+    string projectId=3;
+    repeated string createdTime=4;
+}
