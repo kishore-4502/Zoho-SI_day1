@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+message Project{
+    string name=1;
+    string id=2; // uuid
+    string userId=3;
+    repeated string text=4;
+}
+
+message Notepad{
+    repeated Project projects=1;
+}

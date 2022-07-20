@@ -1,0 +1,4 @@
+﻿  Notepad.cpp
+C:\Kishore\protobuf\install\Demo\Notepad\Notepad\User.cpp(43,1): warning C4267: 'argument': conversion from 'size_t' to 'DWORD', possible loss of data
+C:\Kishore\protobuf\install\Demo\Notepad\Notepad\sha256.h(179,62): warning C4267: 'argument': conversion from 'size_t' to 'unsigned int', possible loss of data
+  Notepad.vcxproj -> C:\Kishore\protobuf\install\Demo\Notepad\x64\Debug\Notepad.exe
