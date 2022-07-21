@@ -15,7 +15,6 @@
 #include "sha256.h"
 #include <conio.h>
 
-
 using namespace std;
 
 string Actions[] = {"Added","Removed","Updated"};
@@ -112,7 +111,6 @@ START:
                         if (list.users(index).userid() == projects.projects(i).userid()) {
                             cout << projects.projects(i).name() << endl;
                         }
-                        
                     }
                     cout << "\n" << endl;
                     cout << "Please select a project to open...Enter 0 to go back..." << endl;
@@ -137,8 +135,6 @@ START:
                     string versionsLocation = projects.projects(projNum - 1).name() + "/versions";
                     string verDir = rootDir + "versionDetails.txt";
                     string verDir2 = rootDir + "changes.txt";
-
-
                 l4:
                     system("CLS");
                     Project selectedProject;
@@ -154,7 +150,7 @@ START:
                     chFile.open(verDir2, ios::in | ios::binary);
                     c1.ParseFromIstream(&chFile);
                 l3:
-                    //system("CLS");
+                    system("CLS");
                     Version v1;
                     v1.set_projectid(selectedProject.name());
                     ifstream temp;
@@ -163,7 +159,8 @@ START:
 
                    
 
-                    OPTIONS:
+                OPTIONS:
+                    
                     cout << "Name : " << selectedProject.name() << endl;
                     cout << "Please select what you want to do with this file" << endl;
                     cout << "1.Display the contents of the file" << endl;
@@ -236,8 +233,17 @@ START:
                         system("CLS");
                         int lineNum;
                         string inp;
-                        cout << "Enter the line number you want to change." << endl;
+                        cout << "Enter the line number you want to change...-1 to go back" << endl;
                         cin >> lineNum;
+                        if (lineNum == -1) {
+                            system("cls");
+                            goto OPTIONS;
+                        }
+                        if (lineNum <= 0) {
+                            system("cls");
+                            cout << "Invalid line Number" << endl;
+                            goto OPTIONS;
+                        }
                         cout << "Enter the new content for that line." << endl;
                         // cin >> inp;
                         cin.ignore();
@@ -286,8 +292,17 @@ START:
                         newProj.set_id(selectedProject.id());
                         newProj.set_userid(selectedProject.userid());
                         int lineNum;
-                        cout << "Enter the line number to be deleted." << endl;
+                        cout << "Enter the line number to be deleted....Enter -1 to go back" << endl;
                         cin >> lineNum;
+                        if (lineNum == -1) {
+                            system("cls");
+                            goto OPTIONS;
+                        }
+                        if (lineNum <= 0) {
+                            system("cls");
+                            cout << "Invalid line Number" << endl;
+                            goto OPTIONS;
+                        }
                         string prev = selectedProject.text(lineNum - 1);
                         for (int i = 0; i < selectedProject.text_size(); i++) {
                             if (i == lineNum - 1) {
@@ -339,12 +354,15 @@ START:
                         int option;
                         cin >> option;
                         if (option==1) {
-                            cout << "Please select a version to revert to...Enter -1 to go back: " << endl;
+                            cout << "Please select a version to revert to...Enter -2 to go back: " << endl;
                             for (int i = 0; i < v1.versionnumber(); i++) {
                                 cout << "Version " << i << " --- " << v1.createdtime(i) << endl;
                             }
                             int opt;
                             cin >> opt;
+                            if (opt == -2 ) {
+                                goto REVERT;
+                            }
                             if (opt == -1) {
                                 system("cls");
                                 goto OPTIONS;
@@ -363,7 +381,12 @@ START:
                             cout << c1.action_size() << endl;
                             for (int i = 0; i < c1.changes_size(); i++) {
                                 cout << "ID : " << c1.id(i).substr(0,4) << endl;
+                                if (c1.action(i) == Changes::UPDATE) {
+                                    cout << "Action : " << Actions[c1.action(i)] << ",  Changed : " << c1.changes(i) <<" to "<<selectedProject.text(c1.linenum(i)-1) << ",  Line Number : " << c1.linenum(i) << ",  Time created : " << c1.createdtime(i) << endl;
+                                }
+                                else {
                                 cout << "Action : " << Actions[c1.action(i)] << ",  Changes : " << c1.changes(i) << ",  Line Number : " << c1.linenum(i) << ",  Time created : " << c1.createdtime(i) << endl;
+                                }
                                 cout << endl;
                             }
                             cout << "Please Enter any ID to revert to...Enter -1 to go back: " << endl;
@@ -445,7 +468,7 @@ START:
 
             }
             else {
-                cout << "Invalid Password" << endl;
+                cout << "\nInvalid Password" << endl;
                 goto PASSWORD;
             }
 
@@ -453,7 +476,6 @@ START:
         }
         else if (input == 2) {
         system("CLS");
-
         string userName;
         string email;
         int age;
