@@ -413,23 +413,21 @@ START:
                                 j++;
                                 if (c1.action(i)==0) {
                                     selectedProject.mutable_text()->RemoveLast();
-                                    std::ofstream op(location, std::ios_base::out | std::ios_base::binary);
-                                    selectedProject.SerializeToOstream(&op);
                                 }
                                 if (c1.action(i)==1) {
                                     selectedProject.add_text(c1.changes(i));
                                     for (int a = selectedProject.text_size()-1; a > c1.linenum(i)-1; a--) {
                                         selectedProject.mutable_text()->SwapElements(a,a-1);
                                     }
-                                    std::ofstream op(location, std::ios_base::out | std::ios_base::binary);
-                                    selectedProject.SerializeToOstream(&op);
                                 }
                                 if(c1.action(i)==2) {
                                     selectedProject.set_text(c1.linenum(i)-1, c1.changes(i));
-                                    std::ofstream op(location, std::ios_base::out | std::ios_base::binary);
-                                    selectedProject.SerializeToOstream(&op);
+                                    
                                 }
                             }
+                            //Write chamges in selected project
+                            std::ofstream op(location, std::ios_base::out | std::ios_base::binary);
+                            selectedProject.SerializeToOstream(&op);
                             for (int i = 0; i < j; i++) {
                                 c1.mutable_action()->RemoveLast();
                                 c1.mutable_changes()->RemoveLast();
