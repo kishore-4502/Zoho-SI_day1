@@ -200,7 +200,7 @@ public:
     }
     void compare(vector<Bank> list)
     {
-        float min_rate = __INT_MAX__ / 1.0;
+        float min_rate = INT_MAX / 1.0;
         string min_bank = "";
         for (int i = 0; i < list.size(); i++)
         {
